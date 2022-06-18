@@ -40,8 +40,8 @@ export class PostController {
   @Post()
   private createPost(
     @Body() createCatDto: CreatePostReqDto,
-    @User() { uid }: auth.UserRecord,
-  ): Promise<PostDocument> {
+    @User() { uid }: auth.UserRecord
+  ): Promise<void> {
     return this.postService.createPost(createCatDto, uid);
   }
 
@@ -60,17 +60,9 @@ export class PostController {
   private async updatePost(
     @Body() updateCatDto: UpdatePostReqDto,
     @Param() { id }: PostIdParamDto,
-    @User() { uid }: auth.UserRecord,
-  ): Promise<PostDocument | never> {
-    const updatedPost: PostDocument | null = await this.postService.updatePost(
-      id,
-      updateCatDto,
-      uid,
-    );
-    if (!updatedPost) {
-      throw new BadRequestException({ message: POST_CRUD_ERROR_MSG });
-    }
-    return updatedPost;
+    @User() { uid }: auth.UserRecord
+  ): Promise<void | never> {
+    return this.postService.updatePost(id, updateCatDto, uid);
   }
 
   @ApiCreatedResponse({ description: 'Delete post' })
@@ -87,14 +79,8 @@ export class PostController {
   @Delete('delete/:id')
   private async deletePost(
     @Param() { id }: PostIdParamDto,
-    @User() { uid }: auth.UserRecord,
+    @User() { uid }: auth.UserRecord
   ): Promise<void> {
-    const deletedPost: PostDocument | null = await this.postService.deletePost(
-      id,
-      uid,
-    );
-    if (!deletedPost) {
-      throw new BadRequestException({ message: POST_CRUD_ERROR_MSG });
-    }
+    return this.postService.deletePost(id, uid);
   }
 }

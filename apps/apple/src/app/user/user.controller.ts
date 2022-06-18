@@ -15,6 +15,7 @@ import { auth } from 'firebase-admin';
 import { FollowDocument } from '../shared/schemas/follow.schema';
 import { UserService } from '../shared/providers/user/user.service';
 import { UserIdParamDto } from './dto/user-id-param.dto';
+import { User as UserResDto } from '@sapp/types';
 
 @ApiBearerAuth()
 @ApiTags('User')
@@ -23,7 +24,7 @@ import { UserIdParamDto } from './dto/user-id-param.dto';
 export class UserController {
   constructor(
     private readonly followService: FollowService,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {}
 
   @ApiOkResponse({
@@ -38,7 +39,7 @@ export class UserController {
   })
   @Get()
   private searchUsers(
-    @Query() { id }: UserIdParamDto,
+    @Query() { id }: UserIdParamDto
   ): Promise<auth.UserRecord> {
     return this.userService.getUserById(id);
   }
@@ -54,7 +55,7 @@ export class UserController {
   @Patch('follow')
   private follow(
     @Query() { id }: UserIdParamDto,
-    @User() { uid }: auth.UserRecord,
+    @User() { uid }: auth.UserRecord
   ): Promise<FollowDocument> {
     return this.followService.follow(uid, id);
   }
@@ -70,8 +71,8 @@ export class UserController {
   @Patch('unfollow')
   private unfollow(
     @Query() { id }: UserIdParamDto,
-    @User() { uid }: auth.UserRecord,
-  ): Promise<FollowDocument> {
+    @User() { uid }: auth.UserRecord
+  ): Promise<void> {
     return this.followService.unfollow(uid, id);
   }
 
@@ -79,7 +80,9 @@ export class UserController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get('following')
-  private whoAmIFollowing(@User() { uid }: auth.UserRecord): Promise<string[]> {
+  private whoAmIFollowing(
+    @User() { uid }: auth.UserRecord
+  ): Promise<UserResDto[]> {
     return this.followService.whoAmIFollowing(uid);
   }
 
@@ -87,7 +90,7 @@ export class UserController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get('followers')
-  private myFollowers(@User() { uid }: auth.UserRecord): Promise<string[]> {
+  private myFollowers(@User() { uid }: auth.UserRecord): Promise<UserResDto[]> {
     return this.followService.myFollowers(uid);
   }
 }
