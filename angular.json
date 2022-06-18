@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "apple": "apps/apple",
+    "lemon": "apps/lemon",
+    "lemon-e2e": "apps/lemon-e2e",
+    "orange": "apps/orange",
+    "orange-e2e": "apps/orange-e2e",
+    "types": "libs/types"
+  }
+}
