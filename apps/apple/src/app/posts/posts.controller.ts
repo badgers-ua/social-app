@@ -10,8 +10,7 @@ import { FirebaseAuthGuard } from '../shared/guards/firebase-auth/firebase-auth-
 import { PostsService } from './posts.service';
 import { User } from '../shared/decorators';
 import { auth } from 'firebase-admin';
-import { PostResDto } from './dto/post-res.dto';
-
+import { Post as PostResDto } from '@sapp/types';
 @ApiBearerAuth()
 @ApiTags('Posts')
 @UseGuards(FirebaseAuthGuard)
@@ -27,7 +26,7 @@ export class PostsController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get()
   private getFollowedUsersPosts(
-    @User() { uid }: auth.UserRecord,
+    @User() { uid }: auth.UserRecord
   ): Promise<PostResDto[]> {
     return this.postsService.getFollowedUsersPosts(uid);
   }

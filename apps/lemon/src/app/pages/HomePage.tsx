@@ -4,7 +4,7 @@ import CreatePost from '../containers/CreatePost';
 import PostList from '../containers/PostList';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
 import usePosts from '../hooks/api/usePosts';
-import { Post } from '../types';
+import { Post } from '@sapp/types';
 
 const HomePage = () => {
   const { load, data = [], isLoading } = usePosts();

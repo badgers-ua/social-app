@@ -2,7 +2,7 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import { Fragment } from 'react';
-import { Post } from '../types';
+import { Post } from '@sapp/types';
 import { default as PostComponent } from '../components/Post';
 
 type PostListProps = {
@@ -34,7 +34,7 @@ const PostList = ({ posts }: PostListProps) => {
               />
             </Fragment>
           );
-        },
+        }
       )}
     </List>
   );
