@@ -27,7 +27,7 @@ const ProfilePage = () => {
 
   const {
     load: loadWhoAmIFollowing,
-    data: following = [],
+    data: followingUsers = [],
     isLoading: isLoadingFollowing,
   } = useWhoAmIFollowingApi();
 
@@ -38,7 +38,10 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { data: user } = useUser();
 
-  const isFollowing: boolean = checkIsFollowing(following, id ?? '');
+  const isFollowing: boolean = checkIsFollowing(
+    followingUsers.map(({ uid }) => uid),
+    id ?? ''
+  );
   const isMe: boolean = user?.uid === id;
   const isLoading: boolean =
     isLoadingFollow ||

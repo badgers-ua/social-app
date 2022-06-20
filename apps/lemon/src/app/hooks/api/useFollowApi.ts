@@ -2,14 +2,15 @@ import { LazyApi } from '../../types';
 import { useAxios } from '../../providers/AxiosProvider';
 import { AxiosInstance } from 'axios';
 import useApi from './useApi';
+import { User } from '@sapp/types';
 
-const useFollowApi = (): LazyApi<string[]> => {
-  const { request, isLoading, data, error } = useApi<string[]>();
+const useFollowApi = (): LazyApi<User[]> => {
+  const { request, isLoading, data, error } = useApi<User[]>();
   const axios: AxiosInstance = useAxios();
 
   const load = async (id: string) => {
     const requestHandler = async () =>
-      await axios.patch<string[]>('user/follow/', null, { params: { id } });
+      await axios.patch<User[]>('user/follow/', null, { params: { id } });
 
     await request(requestHandler);
   };

@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import useUsersApi from '../hooks/api/useUsersApi';
 import useDebounce from '../hooks/useDebounce';
-import { UserRecord } from '../types';
+import { User } from '@sapp/types';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
@@ -73,7 +73,7 @@ const SearchBar = () => {
       forcePopupIcon={false}
       sx={{ width: 250, paddingLeft: 2 }}
       size="small"
-      getOptionLabel={(option: UserRecord) => option.displayName ?? ''}
+      getOptionLabel={(option: User) => option.displayName ?? ''}
       options={debounceSearchTerm ? data : []}
       loading={isLoading}
       renderOption={(props, { displayName, uid, photoURL }) => (

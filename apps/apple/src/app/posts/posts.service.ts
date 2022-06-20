@@ -6,7 +6,7 @@ import { Follow, FollowDocument } from '../shared/schemas/follow.schema';
 import { UsersService } from '../shared/providers/users/users.service';
 import { auth } from 'firebase-admin';
 import { UserService } from '../shared/providers/user/user.service';
-import { PostResDto } from './dto/post-res.dto';
+import { Post as PostResDto, User as UserResDto } from '@sapp/types';
 
 @Injectable()
 export class PostsService {
@@ -15,22 +15,21 @@ export class PostsService {
     @InjectModel(Follow.name)
     private readonly followModel: Model<FollowDocument>,
     private readonly usersService: UsersService,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {}
 
   public async getFollowedUsersPosts(uid: string): Promise<PostResDto[]> {
     const followedUsers = await this.followModel.findOne({ uid }).exec();
 
-    const { users }: auth.GetUsersResult =
-      await this.usersService.getUsersByIdentifiers(
-        followedUsers.follows.map((uid: string) => ({ uid })),
-      );
+    const users: UserResDto[] = await this.usersService.getUsersByIdentifiers(
+      followedUsers.follows.map((uid: string) => ({ uid }))
+    );
 
     const posts: PostDocument[] = await this.postModel
       .find({ createdBy: { $in: followedUsers.follows } })
       .exec();
 
-    const response = this.populateCreatedByField(posts, users);
+    const response: PostResDto[] = this.populateCreatedByField(posts, users);
     return response;
   }
 
@@ -47,9 +46,9 @@ export class PostsService {
 
   private populateCreatedByField = (
     posts: PostDocument[],
-    users: auth.UserRecord[],
+    users: UserResDto[]
   ): PostResDto[] => {
-    const postResDtos: any[] = posts.map(
+    const postResDtos: PostResDto[] = posts.map(
       ({
         _id,
         text,
@@ -66,7 +65,7 @@ export class PostsService {
           __v,
           createdBy: users.find((u: auth.UserRecord) => u.uid === createdById),
         };
-      },
+      }
     );
     return postResDtos;
   };

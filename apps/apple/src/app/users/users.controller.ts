@@ -12,6 +12,7 @@ import { auth } from 'firebase-admin';
 import { UsersService } from '../shared/providers/users/users.service';
 import { UserSearchTermParamDto } from './dto/user-search-term-param.dto';
 import { User } from '../shared/decorators';
+import { User as UserResDto } from '@sapp/types';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -34,8 +35,8 @@ export class UsersController {
   @Get()
   private searchUsers(
     @Query() { term }: UserSearchTermParamDto,
-    @User() { uid }: auth.UserRecord,
-  ): Promise<auth.UserRecord[]> {
+    @User() { uid }: auth.UserRecord
+  ): Promise<UserResDto[]> {
     return this.usersService.getUsers(term, uid);
   }
 }

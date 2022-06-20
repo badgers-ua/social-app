@@ -10,7 +10,7 @@ import SendIcon from '@mui/icons-material/Send';
 import TextFieldLocal from '../components/TextFieldLocal';
 import useCreatePost from '../hooks/api/useCreatePost';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
-import { Post } from '../types';
+import { Post } from '@sapp/types';
 import { v4 as uuid } from 'uuid';
 
 type CreatePostProps = {
