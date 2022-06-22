@@ -21,6 +21,7 @@ export class PostsController {
   @ApiOkResponse({
     description: 'Posts from followed users',
     isArray: true,
+    type: PostResDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
@@ -34,6 +35,7 @@ export class PostsController {
   @ApiOkResponse({
     description: 'Posts created by user',
     isArray: true,
+    type: PostResDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })

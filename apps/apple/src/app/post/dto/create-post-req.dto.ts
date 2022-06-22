@@ -6,6 +6,7 @@ export class CreatePostReqDto {
   @ApiProperty({
     description: 'Content of a Post',
     maxLength: POST_MAX_LENGTH,
+    type: String,
   })
   @IsString()
   @MaxLength(POST_MAX_LENGTH)

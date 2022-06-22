@@ -1,4 +1,4 @@
-import { User as UserResDto } from '@sapp/types';
+import { User } from '@sapp/types';
 import { UsersService } from './../../shared/providers/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,29 +14,30 @@ export class FollowService {
     private readonly usersService: UsersService
   ) {}
 
-  public async follow(whoIsFollowingUid: string, uid) {
-    return this.updateFollowsList(whoIsFollowingUid, uid, true);
+  public async follow(whoIsFollowingUid: string, uid): Promise<void> {
+    await this.updateFollowsList(whoIsFollowingUid, uid, true);
   }
 
-  public async unfollow(whoIsFollowingUid: string, uid) {
+  public async unfollow(whoIsFollowingUid: string, uid): Promise<void> {
     await this.updateFollowsList(whoIsFollowingUid, uid, false);
   }
 
-  public async whoAmIFollowing(uid: string): Promise<UserResDto[]> {
+  public async whoAmIFollowing(uid: string): Promise<User[]> {
     const whoAmIFollowingUids: auth.UserIdentifier[] = (
       (await this.followModel.findOne({ uid }).exec())?.follows ?? []
     ).map((uid: string) => ({ uid }));
-    const whoAmIFollowing: UserResDto[] =
+    const whoAmIFollowing: User[] =
       await this.usersService.getUsersByIdentifiers(whoAmIFollowingUids);
     return whoAmIFollowing;
   }
 
-  public async myFollowers(uid: string): Promise<UserResDto[]> {
+  public async myFollowers(uid: string): Promise<User[]> {
     const myFollowersUids: auth.UserIdentifier[] = (
       (await this.followModel.find({ follows: uid }).distinct('uid')) ?? []
     ).map((uid: string) => ({ uid }));
-    const myFollowers: UserResDto[] =
-      await this.usersService.getUsersByIdentifiers(myFollowersUids);
+    const myFollowers: User[] = await this.usersService.getUsersByIdentifiers(
+      myFollowersUids
+    );
     return myFollowers;
   }
 

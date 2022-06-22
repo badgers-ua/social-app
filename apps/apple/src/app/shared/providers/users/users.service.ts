@@ -1,16 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FB_AUTH_PROVIDER_KEY } from '../../../_constants';
 import { auth } from 'firebase-admin';
-import { User as UserResDto } from '@sapp/types';
+import { User } from '@sapp/types';
 
 @Injectable()
 export class UsersService {
   constructor(@Inject(FB_AUTH_PROVIDER_KEY) private readonly auth: auth.Auth) {}
 
-  public async getUsers(
-    searchTerm: string,
-    uid: string
-  ): Promise<UserResDto[]> {
+  public async getUsers(searchTerm: string, uid: string): Promise<User[]> {
     // firebase admin doesn't support search by name, so have to fake it
     const maxPageLimit = 1000;
     const { users }: auth.ListUsersResult = await this.auth.listUsers(
@@ -26,29 +23,17 @@ export class UsersService {
         });
       }
     );
-    return filteredUsers.map(({ uid, displayName, photoURL, email }) => {
-      return {
-        uid,
-        displayName,
-        email,
-        photoURL,
-      };
+    return filteredUsers.map((userRecord: auth.UserRecord) => {
+      return User.fromUserRecord(userRecord);
     });
   }
 
   public async getUsersByIdentifiers(
     identifiers: auth.UserIdentifier[]
-  ): Promise<UserResDto[]> {
+  ): Promise<User[]> {
     const { users = [] } = await this.auth.getUsers(identifiers);
-    return users.map(
-      ({ uid, displayName, photoURL, email }: auth.UserRecord) => {
-        return {
-          uid,
-          displayName,
-          email,
-          photoURL,
-        };
-      }
-    );
+    return users.map((userRecord: auth.UserRecord) => {
+      return User.fromUserRecord(userRecord);
+    });
   }
 }

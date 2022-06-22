@@ -24,6 +24,7 @@ export class UsersController {
   @ApiOkResponse({
     description: 'Users matched search term',
     isArray: true,
+    type: UserResDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })

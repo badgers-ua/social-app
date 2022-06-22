@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,6 +14,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -22,7 +22,6 @@ import {
 import { PostService } from './post.service';
 import { User } from '../shared/decorators';
 import { auth } from 'firebase-admin';
-import { PostDocument } from '../shared/schemas/post.schema';
 import { UpdatePostReqDto } from './dto/update-post-req.dto';
 import { PostIdParamDto } from './dto/post-id-param.dto';
 import { POST_CRUD_ERROR_MSG } from './_constants';
@@ -45,7 +44,7 @@ export class PostController {
     return this.postService.createPost(createCatDto, uid);
   }
 
-  @ApiCreatedResponse({ description: 'Updated post' })
+  @ApiOkResponse({ description: 'Updated' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({
     description: POST_CRUD_ERROR_MSG,
@@ -65,7 +64,7 @@ export class PostController {
     return this.postService.updatePost(id, updateCatDto, uid);
   }
 
-  @ApiCreatedResponse({ description: 'Delete post' })
+  @ApiOkResponse({ description: 'Deleted' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBadRequestResponse({
     description: POST_CRUD_ERROR_MSG,

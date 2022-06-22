@@ -12,7 +12,6 @@ import { FirebaseAuthGuard } from '../shared/guards/firebase-auth/firebase-auth-
 import { FollowService } from './follow/follow.service';
 import { User } from '../shared/decorators';
 import { auth } from 'firebase-admin';
-import { FollowDocument } from '../shared/schemas/follow.schema';
 import { UserService } from '../shared/providers/user/user.service';
 import { UserIdParamDto } from './dto/user-id-param.dto';
 import { User as UserResDto } from '@sapp/types';
@@ -29,6 +28,7 @@ export class UserController {
 
   @ApiOkResponse({
     description: 'User',
+    type: UserResDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
@@ -38,13 +38,11 @@ export class UserController {
     description: 'User id',
   })
   @Get()
-  private searchUsers(
-    @Query() { id }: UserIdParamDto
-  ): Promise<auth.UserRecord> {
+  private searchUsers(@Query() { id }: UserIdParamDto): Promise<UserResDto> {
     return this.userService.getUserById(id);
   }
 
-  @ApiCreatedResponse({ description: 'Who is user following' })
+  @ApiCreatedResponse({ description: 'Created' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @ApiQuery({
@@ -56,11 +54,11 @@ export class UserController {
   private follow(
     @Query() { id }: UserIdParamDto,
     @User() { uid }: auth.UserRecord
-  ): Promise<FollowDocument> {
+  ): Promise<void> {
     return this.followService.follow(uid, id);
   }
 
-  @ApiCreatedResponse({ description: 'Who is user following' })
+  @ApiCreatedResponse({ description: 'Created' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @ApiQuery({
@@ -76,7 +74,7 @@ export class UserController {
     return this.followService.unfollow(uid, id);
   }
 
-  @ApiOkResponse({ description: 'Who is user following' })
+  @ApiOkResponse({ description: 'Who is user following', type: UserResDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get('following')
@@ -86,7 +84,7 @@ export class UserController {
     return this.followService.whoAmIFollowing(uid);
   }
 
-  @ApiOkResponse({ description: 'Who is following user' })
+  @ApiOkResponse({ description: 'Who is following user', type: UserResDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get('followers')

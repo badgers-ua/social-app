@@ -6,7 +6,7 @@ import { Follow, FollowDocument } from '../shared/schemas/follow.schema';
 import { UsersService } from '../shared/providers/users/users.service';
 import { auth } from 'firebase-admin';
 import { UserService } from '../shared/providers/user/user.service';
-import { Post as PostResDto, User as UserResDto } from '@sapp/types';
+import { Post as PostResDto, User } from '@sapp/types';
 
 @Injectable()
 export class PostsService {
@@ -21,7 +21,7 @@ export class PostsService {
   public async getFollowedUsersPosts(uid: string): Promise<PostResDto[]> {
     const followedUsers = await this.followModel.findOne({ uid }).exec();
 
-    const users: UserResDto[] = await this.usersService.getUsersByIdentifiers(
+    const users: User[] = await this.usersService.getUsersByIdentifiers(
       followedUsers.follows.map((uid: string) => ({ uid }))
     );
 
@@ -38,7 +38,7 @@ export class PostsService {
       .find({ createdBy: uid })
       .exec();
 
-    const user: auth.UserRecord = await this.userService.getUserById(uid);
+    const user: User = await this.userService.getUserById(uid);
 
     const response = this.populateCreatedByField(posts, [user]);
     return response;
@@ -46,7 +46,7 @@ export class PostsService {
 
   private populateCreatedByField = (
     posts: PostDocument[],
-    users: UserResDto[]
+    users: User[]
   ): PostResDto[] => {
     const postResDtos: PostResDto[] = posts.map(
       ({
