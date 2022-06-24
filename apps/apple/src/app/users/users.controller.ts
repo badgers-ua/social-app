@@ -38,6 +38,6 @@ export class UsersController {
     @Query() { term }: UserSearchTermParamDto,
     @User() { uid }: auth.UserRecord
   ): Promise<UserResDto[]> {
-    return this.usersService.getUsers(term, uid);
+    return this.usersService.searchUsers(term, uid);
   }
 }

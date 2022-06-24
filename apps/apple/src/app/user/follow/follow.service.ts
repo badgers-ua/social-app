@@ -1,10 +1,10 @@
 import { User } from '@sapp/types';
-import { UsersService } from './../../shared/providers/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Follow, FollowDocument } from '../../shared/schemas/follow.schema';
 import { auth } from 'firebase-admin';
+import { Follow, FollowDocument } from '../../shared/schemas/follow.schema';
+import { UsersService } from '../../shared/providers/users/users.service';
 
 @Injectable()
 export class FollowService {
@@ -41,6 +41,20 @@ export class FollowService {
     return myFollowers;
   }
 
+  public async getToFollowSuggestions(uid: string): Promise<User[]> {
+    const whoAmIFollowingUsers: User[] = await this.whoAmIFollowing(uid);
+
+    const allUsers: User[] = await this.usersService.getAllUsers();
+
+    return allUsers
+      .filter(
+        (user: User) =>
+          !whoAmIFollowingUsers.some((_user: User) => _user.uid === user.uid) &&
+          user.uid !== uid
+      )
+      .slice(0, 5);
+  }
+
   private async updateFollowsList(
     whoIsFollowingUid: string,
     follows: string,
@@ -61,5 +75,11 @@ export class FollowService {
       })
       .exec();
     return followsList;
+  }
+
+  private getRandomNumberInRange(min: number, max: number): number {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

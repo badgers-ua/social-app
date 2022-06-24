@@ -9,12 +9,12 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../shared/guards/firebase-auth/firebase-auth-guard';
-import { FollowService } from './follow/follow.service';
 import { User } from '../shared/decorators';
 import { auth } from 'firebase-admin';
 import { UserService } from '../shared/providers/user/user.service';
 import { UserIdParamDto } from './dto/user-id-param.dto';
 import { User as UserResDto } from '@sapp/types';
+import { FollowService } from './follow/follow.service';
 
 @ApiBearerAuth()
 @ApiTags('User')
@@ -90,5 +90,18 @@ export class UserController {
   @Get('followers')
   private myFollowers(@User() { uid }: auth.UserRecord): Promise<UserResDto[]> {
     return this.followService.myFollowers(uid);
+  }
+
+  @ApiOkResponse({
+    description: 'Users to follow suggestions',
+    type: UserResDto,
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('suggest-whom-to-follow')
+  private suggestWhomToFollow(
+    @User() { uid }: auth.UserRecord
+  ): Promise<UserResDto[]> {
+    return this.followService.getToFollowSuggestions(uid);
   }
 }
