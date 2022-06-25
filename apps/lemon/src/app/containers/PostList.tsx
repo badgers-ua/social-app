@@ -1,15 +1,33 @@
-import * as React from 'react';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Post } from '@sapp/types';
 import { default as PostComponent } from '../components/Post';
+import usePosts from '../hooks/api/usePosts';
+import { API_LOAD_STATUS } from '../types';
+import { usePostsStore } from '../providers/store/posts/PostsStoreProvider';
 
-type PostListProps = {
-  posts: Post[];
-};
+const PostList = () => {
+  const { posts, setPosts, setLoadStatus } = usePostsStore();
 
-const PostList = ({ posts }: PostListProps) => {
+  const {
+    load: loadPosts,
+    data: loadedPosts = [],
+    status: loadPostsStatus,
+  } = usePosts();
+
+  useEffect(function doLoadPosts() {
+    loadPosts();
+  }, []);
+
+  useEffect(
+    function onPostsLoaded() {
+      setPosts(loadedPosts);
+      setLoadStatus(API_LOAD_STATUS.LOADED);
+    },
+    [loadPostsStatus === API_LOAD_STATUS.LOADED]
+  );
+
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
       {posts.map(

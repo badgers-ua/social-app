@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import axios, { AxiosInstance } from 'axios';
 import { Children } from '../types';
 import { useSigninCheck } from 'reactfire';

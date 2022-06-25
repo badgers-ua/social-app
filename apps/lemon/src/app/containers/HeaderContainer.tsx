@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
 import Hidden from '@mui/material/Hidden';
+import { API_LOAD_STATUS } from '../types';
 
 const HeaderContainer = () => {
   const handleLogout = useSignOut();
@@ -44,9 +45,11 @@ const HeaderContainer = () => {
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
   const debounceSearchTerm = useDebounce<string | undefined>(searchTerm, 300);
-  const { data = [], isLoading, load } = useUsersApi();
+  const { data = [], status, load } = useUsersApi();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const isLoading = status === API_LOAD_STATUS.LOADING;
 
   useSetLoadingStatus({ isLoading });
 

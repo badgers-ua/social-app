@@ -5,7 +5,7 @@ import useApi from './useApi';
 import { User } from '@sapp/types';
 
 const useUserApi = (): LazyApi<User> => {
-  const { request, isLoading, data, error } = useApi<User>();
+  const { request, status, data, error } = useApi<User>();
   const axios: AxiosInstance = useAxios();
 
   const load = async (id: string) => {
@@ -20,7 +20,7 @@ const useUserApi = (): LazyApi<User> => {
   };
 
   return {
-    isLoading,
+    status,
     data,
     error,
     load,

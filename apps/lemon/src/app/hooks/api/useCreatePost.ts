@@ -4,7 +4,7 @@ import { AxiosInstance } from 'axios';
 import useApi from './useApi';
 
 const useCreatePost = (): LazyApi<void> => {
-  const { request, isLoading, data, error } = useApi<void>();
+  const { request, status, data, error } = useApi<void>();
   const axios: AxiosInstance = useAxios();
 
   const load = async (text: string) => {
@@ -14,7 +14,7 @@ const useCreatePost = (): LazyApi<void> => {
   };
 
   return {
-    isLoading,
+    status,
     data,
     error,
     load,

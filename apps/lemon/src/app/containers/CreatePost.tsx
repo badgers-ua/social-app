@@ -12,27 +12,32 @@ import useCreatePost from '../hooks/api/useCreatePost';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
 import { Post } from '@sapp/types';
 import { v4 as uuid } from 'uuid';
+import { API_LOAD_STATUS } from '../types';
+import { usePostsStore } from '../providers/store/posts/PostsStoreProvider';
 
-type CreatePostProps = {
-  onPostCreated: (newPost: Post) => void;
-};
-
-const CreatePost = ({ onPostCreated }: CreatePostProps) => {
+const CreatePost = () => {
+  const { posts, setPosts, loadStatus } = usePostsStore();
   const [newPostValue, setNewPostValue] = useState<string>('');
 
   const { data: user } = useUser();
   const { t } = useTranslation();
 
-  const { load, isLoading } = useCreatePost();
+  const { load, status } = useCreatePost();
+
+  const isLoading = status === API_LOAD_STATUS.LOADING;
 
   useSetLoadingStatus({ isLoading });
+
+  const handlePostCreation = (newPost: Post) => {
+    setPosts([newPost, ...posts]);
+  };
 
   const handleSubmitNewPost = async (e: any) => {
     e.preventDefault();
     const val = newPostValue;
     setNewPostValue('');
     await load(val);
-    onPostCreated({
+    handlePostCreation({
       text: val,
       _id: uuid(),
       createdAt: new Date().toISOString(),
@@ -65,7 +70,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
                   <InputAdornment position="end">
                     <IconButton
                       type="submit"
-                      disabled={!newPostValue.length}
+                      disabled={
+                        !newPostValue.length ||
+                        loadStatus === API_LOAD_STATUS.LOADING
+                      }
                       edge="end"
                     >
                       <SendIcon />

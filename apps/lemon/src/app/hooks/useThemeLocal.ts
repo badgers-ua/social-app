@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 
 const useThemeLocal = () => {
-  const prefersDarkMode: boolean = true;
+  const prefersDarkMode = true;
   // TODO: Auto Theme switching
   // const prefersDarkMode: boolean = useMediaQuery(
   //   '(prefers-color-scheme: dark)',
@@ -15,7 +15,7 @@ const useThemeLocal = () => {
           mode: prefersDarkMode ? 'dark' : 'light',
         },
       }),
-    [prefersDarkMode],
+    [prefersDarkMode]
   );
 
   return theme;

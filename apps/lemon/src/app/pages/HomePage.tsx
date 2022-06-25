@@ -1,45 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import CreatePost from '../containers/CreatePost';
 import PostList from '../containers/PostList';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
-import usePosts from '../hooks/api/usePosts';
-import { Post } from '@sapp/types';
+import { User } from '@sapp/types';
+import useGetWhomToFollowSuggestions from '../hooks/api/useGetWhotToFollowSuggestions';
+import { API_LOAD_STATUS } from '../types';
+import PostsStoreProvider from '../providers/store/posts/PostsStoreProvider';
 
 const HomePage = () => {
-  const { load, data = [], isLoading } = usePosts();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const {
+    load: loadWhomToFollow,
+    data: whomToFollow = [],
+    status: whomToFollowLoadStatus,
+  } = useGetWhomToFollowSuggestions();
 
-  useSetLoadingStatus({ isLoading: isLoading });
+  useSetLoadingStatus({
+    isLoading: whomToFollowLoadStatus === API_LOAD_STATUS.LOADING,
+  });
 
-  useEffect(() => {
-    load();
+  useEffect(function loadData() {
+    loadWhomToFollow();
   }, []);
-
-  useEffect(() => {
-    setPosts(data);
-  }, [data.length]);
-
-  if (isLoading) {
-    return <></>;
-  }
-
-  if (!posts.length) {
-    return <></>;
-  }
-
-  const handlePostCreation = (newPost: Post) => {
-    setPosts([newPost, ...posts]);
-  };
 
   return (
     <Grid container>
       <Grid item xs={12} md={3}>
-        People Suggestions
+        {whomToFollow.map((user: User) => {
+          return <span key={user.uid}>{user.displayName}</span>;
+        })}
       </Grid>
       <Grid item xs={12} md={6}>
-        <CreatePost onPostCreated={handlePostCreation} />
-        <PostList posts={posts} />
+        <PostsStoreProvider>
+          <>
+            <CreatePost />
+            <PostList />
+          </>
+        </PostsStoreProvider>
       </Grid>
     </Grid>
   );

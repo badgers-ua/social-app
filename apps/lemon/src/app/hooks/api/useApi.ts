@@ -1,22 +1,23 @@
+import { API_LOAD_STATUS } from './../../types';
 import { useState } from 'react';
 import { Api } from '../../types';
 
 const useApi = <T>(): Api<T> => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<T>();
   const [error] = useState<string>('');
+  const [status, setStatus] = useState<API_LOAD_STATUS>(API_LOAD_STATUS.INIT);
 
   const request = async (requestHandler: Function) => {
-    setIsLoading(true);
+    setStatus(API_LOAD_STATUS.LOADING);
 
     const { data: responseData } = await requestHandler();
 
     setData(responseData);
-    setIsLoading(false);
+    setStatus(API_LOAD_STATUS.LOADED);
   };
 
   return {
-    isLoading,
+    status,
     data,
     error,
     request,

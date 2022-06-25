@@ -11,6 +11,7 @@ import useFollowApi from '../hooks/api/useFollowApi';
 import useUnFollowApi from '../hooks/api/useUnFollowApi';
 import useSetLoadingStatus from '../hooks/useSetLoadingStatus';
 import { useTranslation } from 'react-i18next';
+import { API_LOAD_STATUS } from '../types';
 
 const checkIsFollowing = (followers: string[], userId: string) =>
   followers.includes(userId);
@@ -22,18 +23,18 @@ const ProfilePage = () => {
   const {
     load: loadUserProfile,
     data: userProfile,
-    isLoading: isLoadingUserProfile,
+    status: loadUserStatus,
   } = useUserApi();
 
   const {
     load: loadWhoAmIFollowing,
     data: followingUsers = [],
-    isLoading: isLoadingFollowing,
+    status: loadWhoAmIFollowingStatus,
   } = useWhoAmIFollowingApi();
 
-  const { load: loadFollow, isLoading: isLoadingFollow } = useFollowApi();
+  const { load: loadFollow, status: followLoadStatus } = useFollowApi();
 
-  const { load: loadUnFollow, isLoading: isLoadingUnFollow } = useUnFollowApi();
+  const { load: loadUnFollow, status: unFollowLoadStatus } = useUnFollowApi();
 
   const navigate = useNavigate();
   const { data: user } = useUser();
@@ -44,10 +45,10 @@ const ProfilePage = () => {
   );
   const isMe: boolean = user?.uid === id;
   const isLoading: boolean =
-    isLoadingFollow ||
-    isLoadingUnFollow ||
-    isLoadingUserProfile ||
-    isLoadingFollowing;
+    followLoadStatus === API_LOAD_STATUS.LOADING ||
+    unFollowLoadStatus === API_LOAD_STATUS.LOADING ||
+    loadUserStatus === API_LOAD_STATUS.LOADING ||
+    loadWhoAmIFollowingStatus === API_LOAD_STATUS.LOADING;
 
   useSetLoadingStatus({
     isLoading,
@@ -66,7 +67,7 @@ const ProfilePage = () => {
     return <></>;
   }
 
-  if (isLoadingUserProfile) {
+  if (loadUserStatus === API_LOAD_STATUS.LOADING) {
     return <></>;
   }
 

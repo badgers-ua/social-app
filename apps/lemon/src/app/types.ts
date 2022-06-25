@@ -7,7 +7,7 @@ export type isLoading = {
 };
 
 export type Api<T> = {
-  isLoading: boolean;
+  status: API_LOAD_STATUS;
   data?: T;
   error: string;
   request: (requestHandler: Function) => void;
@@ -16,3 +16,10 @@ export type Api<T> = {
 export type LazyApi<T> = Omit<Api<T>, 'request'> & {
   load: (options?: any) => void;
 };
+
+export enum API_LOAD_STATUS {
+  INIT,
+  LOADING,
+  LOADED,
+  ERROR,
+}

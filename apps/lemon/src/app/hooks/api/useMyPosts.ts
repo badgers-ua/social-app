@@ -5,7 +5,7 @@ import useApi from './useApi';
 import { Post } from '@sapp/types';
 
 const useMyPosts = (): LazyApi<Post[]> => {
-  const { request, isLoading, data, error } = useApi<Post[]>();
+  const { request, status, data, error } = useApi<Post[]>();
   const axios: AxiosInstance = useAxios();
 
   const load = async () => {
@@ -15,7 +15,7 @@ const useMyPosts = (): LazyApi<Post[]> => {
   };
 
   return {
-    isLoading,
+    status,
     data,
     error,
     load,

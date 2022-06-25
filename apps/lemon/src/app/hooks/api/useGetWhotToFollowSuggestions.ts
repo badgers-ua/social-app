@@ -4,17 +4,13 @@ import { AxiosInstance } from 'axios';
 import useApi from './useApi';
 import { User } from '@sapp/types';
 
-const useUsersApi = (): LazyApi<User[]> => {
+const useGetWhomToFollowSuggestions = (): LazyApi<User[]> => {
   const { request, status, data, error } = useApi<User[]>();
   const axios: AxiosInstance = useAxios();
 
   const load = async (searchTerm: string) => {
     const requestHandler = async () =>
-      await axios.get<User[]>('users/', {
-        params: {
-          term: searchTerm,
-        },
-      });
+      await axios.get<User[]>('user/suggest-whom-to-follow/');
 
     await request(requestHandler);
   };
@@ -27,4 +23,4 @@ const useUsersApi = (): LazyApi<User[]> => {
   };
 };
 
-export default useUsersApi;
+export default useGetWhomToFollowSuggestions;
